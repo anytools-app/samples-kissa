@@ -1,0 +1,37 @@
+---
+export interface Props {
+  src: any;
+  alt: string;
+  width?: number;
+  height?: number;
+  loading?: 'eager' | 'lazy';
+  class?: string;
+}
+
+const props = Astro.props as Props;
+
+let url: string = '';
+let meta: any = null;
+
+const input = props.src;
+if (typeof input === 'string') {
+  url = input;
+} else if (input && typeof input === 'object' && 'src' in input) {
+  meta = input;
+  url = meta.src || '';
+} else if (input && typeof input === 'object' && 'then' in input) {
+  // handle inline import() passed directly
+  const mod = await (input as Promise<any>);
+  meta = mod?.default ?? mod;
+  url = meta?.src ?? '';
+}
+
+let width = props.width;
+let height = props.height;
+if ((!width || !height) && meta) {
+  width = width ?? meta.width;
+  height = height ?? meta.height;
+}
+---
+<img src={url} alt={props.alt} width={width} height={height} loading={props.loading} class={props.class} />
+

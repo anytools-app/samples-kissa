@@ -1,0 +1,59 @@
+---
+export interface Props {
+  src: any;
+  alt: string;
+  widths?: number[];
+  sizes?: string;
+  aspectRatio?: number | `${number}:${number}`;
+  width?: number;
+  height?: number;
+  loading?: 'eager' | 'lazy';
+  class?: string;
+}
+
+const props = Astro.props as Props;
+
+let url: string = '';
+let meta: any = null;
+
+const input = props.src;
+if (typeof input === 'string') {
+  url = input;
+} else if (input && typeof input === 'object' && 'src' in input) {
+  meta = input;
+  url = meta.src || '';
+} else if (input && typeof input === 'object' && 'then' in input) {
+  const mod = await (input as Promise<any>);
+  meta = mod?.default ?? mod;
+  url = meta?.src ?? '';
+}
+
+let width = props.width;
+let height = props.height;
+
+function parseAspect(aspect: Props['aspectRatio']): number | undefined {
+  if (!aspect) return undefined;
+  if (typeof aspect === 'number') return aspect;
+  const [w, h] = aspect.split(':');
+  const wi = parseInt(w, 10);
+  const hi = parseInt(h, 10);
+  return wi && hi ? wi / hi : undefined;
+}
+
+const aspect = parseAspect(props.aspectRatio);
+
+if (!width && !height) {
+  if (meta?.width && meta?.height) {
+    width = meta.width;
+    height = meta.height;
+  }
+}
+if (width && !height && aspect) {
+  height = Math.round(width / aspect);
+}
+if (height && !width && aspect) {
+  width = Math.round(height * aspect);
+}
+---
+<img src={url} alt={props.alt} width={width} height={height} loading={props.loading} class={props.class} sizes={props.sizes} />
+

@@ -1,4 +1,5 @@
 import { defineConfig } from "astro/config";
+import { fileURLToPath } from "node:url";
 import preact from "@astrojs/preact";
 import tailwind from "@astrojs/tailwind";
 import sitemap from "@astrojs/sitemap";
@@ -11,6 +12,15 @@ import partytown from "@astrojs/partytown";
 // https://astro.build/config
 export default defineConfig({
   site: import.meta.env.PUBLIC_SITE_URL,
+  vite: {
+    resolve: {
+      alias: {
+        "@astrojs/image/components": fileURLToPath(
+          new URL("./src/shims/astro-image-components/index.ts", import.meta.url)
+        ),
+      },
+    },
+  },
   integrations: [
     preact(),
     tailwind(),
