@@ -92,3 +92,4 @@ https://document.microcms.io/manual/screen-preview
   https://ドメイン/menu/preview?draftKey={DRAFT_KEY}
 - ギャラリー
   https://ドメイン/gallery/preview?draftKey={DRAFT_KEY}
+
