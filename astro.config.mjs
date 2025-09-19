@@ -12,6 +12,10 @@ import partytown from "@astrojs/partytown";
 // https://astro.build/config
 export default defineConfig({
   site: import.meta.env.PUBLIC_SITE_URL,
+  trailingSlash: "always",
+  build: {
+    format: "directory",
+  },
   vite: {
     resolve: {
       alias: {
